@@ -9,6 +9,14 @@ body {
   position: relative; 
   left: 0; 
   top: 0;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  background-color: rgb(29, 30, 30);
+  color: antiquewhite;
+}
+
+nav {
+  display: grid;
+  justify-content: center;
 }
 
 img {
