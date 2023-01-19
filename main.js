@@ -71,8 +71,10 @@ function fetchISSLocation() {
 
 function updateLocation(location) {
   if (location.name === "iss") {
-    lblLat.innerHTML = `lat: ${location.latitude}&nbsp;`;
-    lblLong.innerHTML = `long: ${location.longitude}`;
+    const lat = String(location.latitude);
+    const long = String(location.longitude);
+    lblLat.innerHTML = `lat: ${lat.slice(0,7)}&nbsp;`;
+    lblLong.innerHTML = `long: ${long.slice(0,7)}`;
     latitude = +location.latitude;
     longitude = +location.longitude;
   } else {
