@@ -1,12 +1,13 @@
 import './style.css';
-import {Map, View} from 'ol';
+import { Map, View } from 'ol';
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
-import {fromLonLat} from 'ol/proj';
+import { fromLonLat } from 'ol/proj';
 import Feature from 'ol/Feature.js';
 import Point from 'ol/geom/Point.js';
 import VectorSource from 'ol/source/Vector.js';
 import VectorLayer from 'ol/layer/Vector.js';
+import {defaults as defaultInteractions} from 'ol/interaction.js';
 
 let latitude = 0.0;
 let longitude = 0.0;
@@ -18,6 +19,18 @@ const map = new Map({
       source: new OSM()
     })
   ],
+  interactions: defaultInteractions({
+    doubleClickZoom: true,
+    dragAndDrop: false,
+    keyboardPan: false,
+    keyboardZoom: true,
+    dragPan: false,
+    pinchRotate: false,
+    altShiftDragRotate: false,
+    mouseWheelZoom: false,
+    pointer: false,
+    select: false
+  }),
   view: new View({
     center: fromLonLat([0, 0]),
     zoom: 4
@@ -38,38 +51,41 @@ const markerVectorLayer = new VectorLayer({
 });
 map.addLayer(markerVectorLayer);
 
-const lblLocation = document.querySelector("#lblLocation");
+const lblLat = document.querySelector("#lblLat");
+const lblLong = document.querySelector("#lblLong");
 
 function fetchISSLocation() {
-    try {
-        fetch("https://api.wheretheiss.at/v1/satellites/25544")
-            .then(response => {
-                return response.json();
-            })
-            .then(location => {
-                updateLocation(location)
-            });
-    } catch (err) {
-        console.log(err)
-    }
+  try {
+    fetch("https://api.wheretheiss.at/v1/satellites/25544")
+      .then(response => {
+        return response.json();
+      })
+      .then(location => {
+        updateLocation(location)
+      });
+  } catch (err) {
+    console.log(err)
+  }
 }
 
 
 function updateLocation(location) {
-    if (location.name === "iss") {
-        lblLocation.innerHTML = `lat: ${location.latitude} long: ${location.longitude}`;
-        latitude = +location.latitude;
-        longitude = +location.longitude;
-    } else {
-        lblLocation.innerHTML = "not found";
-    };
+  if (location.name === "iss") {
+    lblLat.innerHTML = `lat: ${location.latitude}&nbsp;`;
+    lblLong.innerHTML = `long: ${location.longitude}`;
+    latitude = +location.latitude;
+    longitude = +location.longitude;
+  } else {
+    lblLat.innerHTML = "";
+    lblLong.innerHTML = "";
+  };
 }
 
 
 function updateLoop() {
-    fetchISSLocation();
-    mapView.setCenter(fromLonLat([longitude, latitude]));
-    setTimeout(updateLoop, 5000);
+  fetchISSLocation();
+  mapView.setCenter(fromLonLat([longitude, latitude]));
+  setTimeout(updateLoop, 5000);
 }
 
 updateLoop();
